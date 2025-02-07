@@ -24,5 +24,5 @@ jobs:
 
     - name: Build
       run: |
-        npm adit fix
+        npm install
         gulp
