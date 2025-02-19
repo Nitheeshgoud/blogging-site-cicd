@@ -27,8 +27,8 @@ jobs:
 
       - name: Build project
         run: |
-          # Replace this with your actual build command
-          npm run build
+        
+          npm install
 
       - name: Archive build output
         run: |
