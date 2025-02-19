@@ -48,4 +48,4 @@ jobs:
           ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd /home/azureuser/nitheesh
             tar -xzf build.tar.gz
-         EOF
+          EOF
