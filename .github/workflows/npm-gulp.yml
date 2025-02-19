@@ -15,39 +15,54 @@ jobs:
         node-version: [22.x]
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Build
-      run: |
-        npm install
+      - name: Install dependencies
+        run: npm install
 
-  deploy: 
+      - name: Build project
+        run: |
+          # Replace this with your actual build command
+          npm run build
+
+      - name: Archive build output
+        run: |
+          mkdir -p build-artifact
+          tar -czf build-artifact/build.tar.gz -C build/ .
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact
+          path: build-artifact/build.tar.gz
+
+  deploy:
     needs: build
     runs-on: ubuntu-latest
-    steps: 
-      - name: checkout repository
+    steps:
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: download build artifact
+      - name: Download build artifact
         uses: actions/download-artifact@v4
-        with: 
+        with:
           name: build-artifact
-          path: build/
+          path: build-artifact/
 
-      - name: deploy via ssh
-        env: 
+      - name: Deploy via SSH
+        env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-          scp -i ~/.ssh/id_rsa -P ${{ secrets.SSH_PORT }} build/build.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/azureuser/nitheesh
+          scp -i ~/.ssh/id_rsa -P ${{ secrets.SSH_PORT }} build-artifact/build.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/azureuser/nitheesh
           ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd /home/azureuser/nitheesh
             tar -xzf build.tar.gz
