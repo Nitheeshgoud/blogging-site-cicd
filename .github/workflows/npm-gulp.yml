@@ -25,17 +25,20 @@ jobs:
     - name: Build
       run: |
         npm install
-    deploy: 
+
+  deploy: 
     needs: build
     runs-on: ubuntu-latest
     steps: 
       - name: checkout repository
         uses: actions/checkout@v4
+
       - name: download build artifact
         uses: actions/download-artifact@v4
         with: 
           name: build-artifact
           path: build/
+
       - name: deploy via ssh
         env: 
           SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
@@ -48,4 +51,4 @@ jobs:
           ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd /home/azureuser/nitheesh
             tar -xzf build.tar.gz
-         EOF
+          EOF
