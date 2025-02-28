@@ -15,51 +15,29 @@ jobs:
         node-version: [22.x]
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
 
-      - name: Install dependencies
-        run: |
-          npm install
-
-      - name: Build
-        run: |
-          npm run build  # Ensure this script exists in package.json
-
-      - name: Create build artifact
-        run: |
-          tar -czf build.tar.gz -C build .  # Replace "build" with your build directory
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifact
-          path: build.tar.gz
-
-  deploy:
+    - name: Build
+      run: |
+        npm install
+    deploy: 
     needs: build
     runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
+    steps: 
+      - name: checkout repository
         uses: actions/checkout@v4
-
-      - name: Download build artifact
+      - name: download build artifact
         uses: actions/download-artifact@v4
-        with:
+        with: 
           name: build-artifact
           path: build/
-
-      - name: Debug artifact download
-        run: |
-          ls -l build/  # Verify the artifact was downloaded
-
-      - name: Deploy via SSH
-        env:
+      - name: deploy via ssh
+        env: 
           SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
         run: |
           mkdir -p ~/.ssh
@@ -70,4 +48,4 @@ jobs:
           ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd /home/azureuser/nitheesh
             tar -xzf build.tar.gz
-          EOF
+         EOF
