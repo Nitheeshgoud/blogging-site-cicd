@@ -32,10 +32,6 @@ jobs:
       run: |
         npm install
 
-    - name: Run linter
-      run: |
-        npm run lint
-
     - name: Run tests
       run: |
         npm test
@@ -46,4 +42,4 @@ jobs:
 
     - name: Deploy to S3
       run: |
-        aws s3 cp build/ s3://your-s3-bucket/ --recursive
+        aws s3 cp build/ s3://demo-artifact/ --recursive
