@@ -28,7 +28,7 @@ jobs:
 
       - name: Build
         run: |
-          npm run build  # Replace with your build command
+          npm run build  # Ensure this script exists in package.json
 
       - name: Create build artifact
         run: |
@@ -66,4 +66,8 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-          scp -i ~
+          scp -i ~/.ssh/id_rsa -P ${{ secrets.SSH_PORT }} build/build.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/azureuser/nitheesh
+          ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd /home/azureuser/nitheesh
+            tar -xzf build.tar.gz
+          EOF
