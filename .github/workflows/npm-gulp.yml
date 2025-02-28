@@ -22,16 +22,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Cache node modules
-      uses: actions/cache@v3
-      with:
-        path: node_modules
-        key: node-modules-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
-
-    - name: Install dependencies
+    - name: Build
       run: |
         npm install
-
-    - name: Deploy to S3
-      run: |
-        aws s3 cp build/ s3://demo-artifact/ --recursive
