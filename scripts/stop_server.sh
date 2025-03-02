@@ -1,2 +1,3 @@
 #!/bin/bash
-sudo pkill -f "node server.js"
+cd /home/ubuntu/app
+pkill -f "node server.js"
