@@ -1,3 +1,3 @@
 #!/bin/bash
-cd /home/ubuntu/app
-npm start
+cd /opt/blog-app
+npm start &
