@@ -2,17 +2,17 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ubuntu/app
+    destination: /opt/blog-app
 hooks:
-  ApplicationStop:
+  BeforeInstall:
     - location: scripts/stop_server.sh
       timeout: 300
       runas: ubuntu
-  BeforeInstall:
+  AfterInstall:
     - location: scripts/install_dependencies.sh
       timeout: 300
       runas: ubuntu
-  AfterInstall:
+  ApplicationStart:
     - location: scripts/start_server.sh
       timeout: 300
       runas: ubuntu
