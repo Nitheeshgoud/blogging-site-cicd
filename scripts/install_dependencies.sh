@@ -1,3 +1,3 @@
 #!/bin/bash
-cd /home/ubuntu/app
+cd /opt/blog-app
 npm install
